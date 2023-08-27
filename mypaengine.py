@@ -201,10 +201,10 @@ def calc_unlinked_template(portfolios= ["LION:IVV-US"],
                                             start_date = None,
                                             end_date = "0D",
                                             template_type_name= 'Weights',
-                                            columns = [("Port. Ending Weight","Portfolio/Position Data","Factset")],
+                                            columns = [{'name' : "Port. Ending Weight",'category':"Portfolio/Position Data",'directory' :"Factset"}],
                                             stats =["Weighted Average"],
                                             level = 'SECURITIES',
-                                            groups = [(None,None,None)],
+                                            groups = [{'name' : None,'category':None,'directory' :None}],
                                             holdings_mode = "B&H",
                                             report_frequency = 'Single',
                                             **kwargs):
@@ -216,7 +216,7 @@ def calc_unlinked_template(portfolios= ["LION:IVV-US"],
         col_id_list = []
         for x in range(len(columns)):
             for stat in stats:
-                column = get_pa_columns(name = columns[x][0],category = columns[x][1],directory = columns[x][2])
+                column = get_pa_columns(name = columns[x]['name'],category = columns[x]['category'],directory = columns[x]['directory'])
                 column_id = list(column[0].data.keys())[0]
                 # get column statistic ids for matches
                 all_column_statistics = get_pa_column_statistics()
@@ -225,7 +225,7 @@ def calc_unlinked_template(portfolios= ["LION:IVV-US"],
                 col_id_list.append(PACalculationColumn(id=column_id,statistics=[column_statistic_id]))
         #search all groups ids for matches
         group_id_list = []
-        if(groups!= [(None,None,None)]):
+        if(groups[0]['name']!= None):
             for x in range(len(groups)):
                 all_groups = get_pa_groups()
                 group_id = [id for id in list(
