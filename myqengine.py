@@ -9,11 +9,8 @@ from fds.analyticsapi.engines.model.quant_calculation_parameters import QuantCal
 from fds.analyticsapi.engines.model.quant_calculation_meta import QuantCalculationMeta
 from fds.analyticsapi.engines.model.quant_screening_expression import QuantScreeningExpression
 from fds.analyticsapi.engines.model.quant_fql_expression import QuantFqlExpression
-from fds.analyticsapi.engines.model.quant_all_universal_screen_parameters import QuantAllUniversalScreenParameters
-from fds.analyticsapi.engines.model.quant_universal_screen_parameter import QuantUniversalScreenParameter
 from fds.analyticsapi.engines.configuration import Configuration
 from fds.analyticsapi.engines.model.quant_screening_expression_universe import QuantScreeningExpressionUniverse
-from fds.analyticsapi.engines.model.quant_universal_screen_universe import QuantUniversalScreenUniverse
 from fds.analyticsapi.engines.model.quant_identifier_universe import QuantIdentifierUniverse
 from fds.analyticsapi.engines.model.quant_fds_date import QuantFdsDate
 from fds.analyticsapi.engines.model.quant_date_list import QuantDateList
@@ -52,7 +49,7 @@ fds_config.retries = Retry(
 #connect to api
 api_client = ApiClient(fds_config)
 
-class universe:
+class screen_universe:
     def __init__(self,universe_expr,universe_type):
         self.universe_expr = universe_expr
         self.universe_type= universe_type
@@ -62,6 +59,16 @@ class universe:
         return self
     def get_univ(self):
         return QuantScreeningExpressionUniverse(universe_expr = self.universe_expr,universe_type = self.universe_type,source= self.source,security_expr = self.security_expr)
+
+class id_universe:
+    def __init__(self,ids,universe_type):
+        self.ids = ids
+        self.universe_type= universe_type
+        self.source = 'IdentifierUniverse'
+    def __str__(self):
+        return self
+    def get_univ(self):
+        return QuantIdentifierUniverse(identifiers = self.ids,universe_type = self.universe_type,source= self.source)
 class time_series:
     def __init__(self,start_date,end_date = '0',frequency = 'M',calendar = 'NAY'):
         self.start_date = start_date
@@ -128,12 +135,15 @@ def get_results(response):
     return (data, metadata)
 
 
-def calculate(universe, dates, formulas):
-    scr_formulas = []
+def calculate(universe, dates, formulas,source = 'ScreeningExpression',is_array_return_type = False):
+    quant_formulas = []
     for formula in formulas:
-        scr_formulas.append(QuantScreeningExpression(expr=formula,name=formula,source = 'ScreeningExpression'))
+        if(source=='ScreeningExpression'):
+            quant_formulas.append(QuantScreeningExpression(expr=formula,name=formula,source = source))
+        else:
+            quant_formulas.append(QuantFqlExpression(expr=formula,name=formula,source = source,is_array_return_type= is_array_return_type))
     params = QuantCalculationParametersRoot(
-        data={'1': QuantCalculationParameters(universe=universe.get_univ(), dates=dates.get_dates(), formulas=scr_formulas)},
+        data={'1': QuantCalculationParameters(universe=universe.get_univ(), dates=dates.get_dates(), formulas=quant_formulas)},
         meta=QuantCalculationMeta(format='Feather'),
     )
     response = QuantCalculationsApi(api_client).post_and_calculate(quant_calculation_parameters_root=params)
