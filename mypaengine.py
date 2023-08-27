@@ -233,12 +233,6 @@ def calc_unlinked_template(portfolios= ["LION:IVV-US"],
                                       all_groups[0].data[id].directory == groups[x][2] and
                                       all_groups[0].data[id].name == groups[x][0]][0]
                 group_id_list.append(PACalculationGroup(id=group_id))
-        #build portfolio/bench list
-        portfolio_ids = []
-        benchmark_ids = []
-        for portfolio,benchmark in zip(portfolios,benchmarks):
-            portfolio_ids.append(PAIdentifier(id=str(portfolio),holdingsmode=holdings_mode))
-            benchmark_ids.append(PAIdentifier(id=str(benchmark),holdingsmode=holdings_mode))
 
         #set PA date/date range
         if (start_date == None):
@@ -248,8 +242,8 @@ def calc_unlinked_template(portfolios= ["LION:IVV-US"],
         #build template using first port/bench combo
         temp_params = UnlinkedPATemplateParameters(directory='personal:',
                                                     template_type_id = template_type_id,
-                                                    accounts = [portfolio_ids[0]],
-                                                    benchmarks = [benchmark_ids[0]],
+                                                    accounts = [PAIdentifier(id=str(portfolios[0]),holdingsmode=holdings_mode)],
+                                                    benchmarks = [PAIdentifier(id=str(benchmarks[0]),holdingsmode=holdings_mode)],
                                                     dates =dates,
                                                     columns =col_id_list,
                                                     )
@@ -259,12 +253,12 @@ def calc_unlinked_template(portfolios= ["LION:IVV-US"],
         comp_id = response[0]['data']['id']
         #build final calculation
         data= {}
-        for portfolio,benchmark in zip(portfolio_ids,benchmark_ids):
+        for portfolio,benchmark in zip(portfolios,benchmarks):
             root_index = str(portfolio)+"_"+str(benchmark)
             if groups!=None:
-                data[str(root_index)]=PACalculationParameters(componentid=comp_id ,accounts=[portfolio],benchmarks=[benchmark],dates=dates,columns =col_id_list,groups=group_id_list,componentdetail = level)
+                data[str(root_index)]=PACalculationParameters(componentid=comp_id ,accounts=[PAIdentifier(id=str(portfolio),holdingsmode=holdings_mode)],benchmarks=[PAIdentifier(id=str(benchmark),holdingsmode=holdings_mode)],dates=dates,columns =col_id_list,groups=group_id_list,componentdetail = level)
             else:
-                data[str(root_index)]=PACalculationParameters(componentid=comp_id ,accounts=[portfolio],benchmarks=[benchmark],dates=dates,columns =col_id_list,componentdetail = level)
+                data[str(root_index)]=PACalculationParameters(componentid=comp_id ,accounts=[PAIdentifier(id=str(portfolio),holdingsmode=holdings_mode)],benchmarks=[PAIdentifier(id=str(benchmark),holdingsmode=holdings_mode)],dates=dates,columns =col_id_list,componentdetail = level)
             try:
                 pa_root = PACalculationParametersRoot(data=data)
             except Exception as e:
