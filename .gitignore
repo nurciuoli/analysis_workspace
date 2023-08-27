@@ -1,2 +1,4 @@
 /.env
 /__pycache__
+/fund_data_hldrs.csv
+/nvidia_holder_analysis_full_dataset.csv
