@@ -4,6 +4,9 @@
 /nvidia_holder_analysis_full_dataset.csv
 /nvidia_contribution_analysis_data.csv
 /nvidia_pa_contribution_analysis_dataset.csv
+/nvidia_holder_analysis_full_dataset_20230828.csv
 /scratch_pa_api_datagen.ipynb
-/nividia_pa_contribution_vs_bench_dataset_20230828.csv
-/scratch NVDA PA Weights Data Gen and Analysis.ipynb
+/nvidia_pa_contribution_full_raw_dataset_20230828.csv
+/old NVIDIA PA Contribution T100 by AUM Prelim Analysis.ipynb
+/old NVDA PA Contribution T100 by AUM Data Gen.ipynb
+/old NVDA Month End Holder Data Gen and Prelim Analysis.ipynb
